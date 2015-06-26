@@ -6,7 +6,7 @@ var name = require('./name');
 var source = 'https://developer.github.com';
 var filter = ['octo', 'skunk', 'https']; // filter commands containing these keywords
 
-scrapeCommands(function (cmds) {
+scrape(function (cmds) {
   var commands = {};
   var duplicates = hasDuplicates(cmds);
   cmds = cmds.sort();
@@ -28,7 +28,7 @@ scrapeCommands(function (cmds) {
   });
 })
 
-function scrapeCommands (cb) {
+function scrape (cb) {
 
   var cmd = [];
   var completed = 0;
