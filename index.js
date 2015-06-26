@@ -35,16 +35,22 @@ function makeReq(str) {
       turl = str.substr(ind+1, str.length),
       args, body;
 
-      args = turl.split('/').filter(function(val) {
+      args = turl.split('/');
+      args = args.filter(function(val) {
         return val.indexOf(':') !== -1;
-      }).reduce(function (last, curr, i) {
-        if (i===1) {
-          last = last.split('...');
-        }
-        return last.concat(curr.split('...'));
-      }).map(function(curr) {
+      });
+      if (args.length > 1) {
+        args = args.reduce(function (last, curr, i) {
+          if (i===1) {
+            last = last.split('...');
+          }
+          return last.concat(curr.split('...'));
+        });
+      }
+      args = args.map(function(curr) {
         return curr.slice(1);
       })
+
 
   return function () {
     var url = turl;
@@ -54,7 +60,6 @@ function makeReq(str) {
       var key = args[i],
           val = arguments[i];
       if (typeof val === 'string') {
-        console.log(key)
         url = url.replace(':'+key, val);
       } else {
         console.error('Expecting string for', args[i] ,'argument. Instead got', typeof val, val);
