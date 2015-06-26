@@ -5,9 +5,6 @@ var commands = require('./commands');
 
 module.exports = req;
 
-var compare = makeReq('GET /repos/:owner/:repo/compare/:base...:head');
-console.log(compare('lukeburns', 'lukeburns.github.io', 'base', 'head'))
-
 function req() {
   var command = Array.prototype.shift.apply(arguments);
   var callback;
