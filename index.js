@@ -69,7 +69,8 @@ function makeReq(str) {
       },
       method: method,
       url: 'https://api.github.com'+url,
-      json: true
+      json: true,
+      withCredentials: false
     }
 
     if (typeof options === 'object') {
