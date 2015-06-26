@@ -1,8 +1,12 @@
 var request = require('request');
 var qs = require('querystring');
+var fs = require('fs');
 var commands = require('./commands');
 
 module.exports = req;
+
+var compare = makeReq('GET /repos/:owner/:repo/compare/:base...:head');
+console.log(compare('lukeburns', 'lukeburns.github.io', 'base', 'head'))
 
 function req() {
   var command = Array.prototype.shift.apply(arguments);
@@ -32,12 +36,18 @@ function makeReq(str) {
   var ind = str.indexOf(' '),
       method = str.substr(0, ind),
       turl = str.substr(ind+1, str.length),
+      args, body;
+
       args = turl.split('/').filter(function(val) {
-         return val.indexOf(':') !== -1;
-      }).map(function(val) {
-         return val.substr(1);
-      }),
-      body;
+        return val.indexOf(':') !== -1;
+      }).reduce(function (last, curr, i) {
+        if (i===1) {
+          last = last.split('...');
+        }
+        return last.concat(curr.split('...'));
+      }).map(function(curr) {
+        return curr.slice(1);
+      })
 
   return function () {
     var url = turl;
@@ -47,6 +57,7 @@ function makeReq(str) {
       var key = args[i],
           val = arguments[i];
       if (typeof val === 'string') {
+        console.log(key)
         url = url.replace(':'+key, val);
       } else {
         console.error('Expecting string for', args[i] ,'argument. Instead got', typeof val, val);
