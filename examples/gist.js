@@ -8,11 +8,11 @@ var input = {
   }
 }
 
-req('createGist', input, function (err, data, res) {
+req('createGist', input, function (err, res, body) {
   if(!err) {
-    req('getGist', res.id, function (err, data, res) {
-      document.body.appendChild(document.createTextNode("Created new gist: "+res.files.api.content));
-      console.log(res);
+    req('getGist', body.id, function (err, res, body) {
+      document.body.appendChild(document.createTextNode("Created new gist: "+body.files.api.content));
+      console.log(body);
     });
   }
 });

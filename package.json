@@ -1,0 +1,29 @@
+{
+  "name": "ghapi",
+  "version": "0.0.1",
+  "description": "a small, complete, github api for node and browser",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {
+    "camel-case": "^1.1.2",
+    "i": "^0.3.3",
+    "request": "^2.58.0",
+    "cheerio": "^0.19.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lukeburns/api.git"
+  },
+  "author": "Luke Burns <lukemburns@gmail.com> (http://lukeburns.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lukeburns/api/issues"
+  },
+  "homepage": "https://github.com/lukeburns/api"
+}

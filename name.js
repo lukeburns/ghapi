@@ -29,6 +29,8 @@ function name (str) {
       continue;
     } else if (turls[i] === 'memberships' && turls[i-1] === 'user') {
       continue;
+    } else if (turls[i] === 'stats' && turls[i+1]) {
+      continue;
     }
 
     curr = capitalize(camel(turls[i].replace(/\:/g, "")));
