@@ -1,8 +1,8 @@
 {
   "name": "ghapi",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "a github api for node and browser",
-  "main": "index.js",
+  "main": "ghapi.js",
   "directories": {
     "example": "examples"
   },
@@ -18,12 +18,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lukeburns/api.git"
+    "url": "https://github.com/lukeburns/ghapi.git"
   },
   "author": "Luke Burns <lukemburns@gmail.com> (http://lukeburns.com/)",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/lukeburns/api/issues"
+    "url": "https://github.com/lukeburns/ghapi/issues"
   },
   "homepage": "https://github.com/lukeburns/ghapi"
 }
