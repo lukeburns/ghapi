@@ -13,7 +13,7 @@ var api = require('ghapi')
 ```
 
 ```javascript
-api(command, arg_1, ..., arg_n [, options, callback])
+api(command, arg_1, ..., arg_n [, parameters, callback])
 ```
 
 See `commands.js` for a list of all the commands. The file is compiled by scraping all the commands form the [Github API documentation](https://developer.github.com/v3/). Consult the Github documentation for parameters associated with each api call.

@@ -32,25 +32,14 @@ function generate (command) {
 
   // Get command arguments:
 
-    // split into ['repos', ':owner', ':repo', 'compare', ':base...:head']
-    args = turl.split('/');
-    // filter to [':owner', ':repo', ':base...:head']
-    args = args.filter(function(val) {
-      return val.indexOf(':') !== -1;
-    });
-    // reduce to [':owner', ':repo' ':base', ':head']
-    if (args.length > 1) {
-      args = args.reduce(function (last, curr, i) {
-        if (i===1) {
-          last = last.split('...');
-        }
-        return last.concat(curr.split('...'));
-      });
-    }
-    // map to ['owner', 'repo' 'base', 'head']
-    args = args.map(function(curr) {
-      return curr.slice(1);
-    })
+  args = turl
+  .split(':')
+  .map(function (arg) {
+    return arg.replace(/\/.*|\..*/, '');
+  })
+  .filter(function (arg) {
+    return arg;
+  })
 
   // return request generator
   return function () {
@@ -79,10 +68,8 @@ function generate (command) {
     req.withCredentials = false;
 
     // handle parameters
-
     if (count > expectedCount) {
       parameters = arguments[count-1];
-
       if (parameters.auth) {
         req.auth = parameters.auth;
         delete parameters.auth;
