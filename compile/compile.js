@@ -15,8 +15,8 @@ scrape(function (cmds) {
     commands[name(cmds[i])] = cmds[i];
   };
 
-  fs.writeFile('commands.js', 'module.exports = ' + JSON.stringify(commands, null, 2), function (err, data) {
-    console.log(require('./commands'))
+  fs.writeFile('../commands.js', 'module.exports = ' + JSON.stringify(commands, null, 2), function (err, data) {
+    console.log(require('../commands'))
     if (!err && !duplicates) {
       console.log('0 duplicates.')
       console.log('Successful compilation.');

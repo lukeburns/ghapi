@@ -11,7 +11,9 @@ var input = {
 req('createGist', input, function (err, res, body) {
   if(!err) {
     req('getGist', body.id, function (err, res, body) {
-      document.body.appendChild(document.createTextNode("Created new gist: "+body.files.api.content));
+      if (typeof window !== 'undefined') {
+        document.body.appendChild(document.createTextNode("Created new gist: "+body.files.api.content));
+      }
       console.log(body);
     });
   }

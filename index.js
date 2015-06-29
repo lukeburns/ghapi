@@ -3,95 +3,101 @@ var qs = require('querystring');
 var fs = require('fs');
 var commands = require('./commands');
 
-module.exports = req;
+module.exports = api;
 
-function req() {
-  var command = Array.prototype.shift.apply(arguments);
+function api () {
   var callback;
 
+  // first argument is the command
+  var command = Array.prototype.shift.apply(arguments);
+
+  // last argument is callback, if it's a function
   if (typeof arguments[arguments.length-1] === 'function') {
     callback = Array.prototype.pop.apply(arguments);
   }
 
-  var requestor = makeReq(commands[command]);
-  var req = requestor.apply(null, arguments);
+  // generate function that formats a request for the `request` library.
+  var req = generate(commands[command]);
 
-  if (typeof arguments[arguments.length-1] === 'object' && arguments[arguments.length-1].auth) {
-    var ind = arguments.length-1;
-    req.auth = arguments[ind].auth;
-    delete arguments[ind].auth;
-  }
-
-  if (typeof callback === 'function') {
-    request(req, callback);
-  } else {
-    return request(req);
-  }
+  // call request with callback and return request stream
+  return request(req.apply(null, arguments), callback);
 }
 
-function makeReq(str) {
-  var ind = str.indexOf(' '),
-      method = str.substr(0, ind),
-      turl = str.substr(ind+1, str.length),
+// expects command in form of 'GET /repos/:owner/:repo/compare/:base...:head'
+function generate (command) {
+  var parts = command.split(' '), // split into ['GET', '/repos/:owner/:repo/compare/:base...:head']
+      method = parts[0],
+      turl = parts[1],
       args, body;
 
-      args = turl.split('/');
-      args = args.filter(function(val) {
-        return val.indexOf(':') !== -1;
+  // Get command arguments:
+
+    // split into ['repos', ':owner', ':repo', 'compare', ':base...:head']
+    args = turl.split('/');
+    // filter to [':owner', ':repo', ':base...:head']
+    args = args.filter(function(val) {
+      return val.indexOf(':') !== -1;
+    });
+    // reduce to [':owner', ':repo' ':base', ':head']
+    if (args.length > 1) {
+      args = args.reduce(function (last, curr, i) {
+        if (i===1) {
+          last = last.split('...');
+        }
+        return last.concat(curr.split('...'));
       });
-      if (args.length > 1) {
-        args = args.reduce(function (last, curr, i) {
-          if (i===1) {
-            last = last.split('...');
-          }
-          return last.concat(curr.split('...'));
-        });
-      }
-      args = args.map(function(curr) {
-        return curr.slice(1);
-      })
+    }
+    // map to ['owner', 'repo' 'base', 'head']
+    args = args.map(function(curr) {
+      return curr.slice(1);
+    })
 
-
+  // return request generator
   return function () {
+    var req = {};
     var url = turl;
-    var options;
+    var parameters;
+    var count = arguments.length; // number of arguments passed to function
+    var expectedCount = args.length; // expected number of arguments
 
-    for (var i = 0; i < args.length; i++) {
+    // match up arguments
+    for (var i = 0; i < expectedCount; i++) {
       var key = args[i],
           val = arguments[i];
-      if (typeof val === 'string') {
+      if (typeof val === 'string' || typeof val === 'number' || typeof val === 'boolean') {
         url = url.replace(':'+key, val);
       } else {
         console.error('Expecting string for', args[i] ,'argument. Instead got', typeof val, val);
       }
     }
 
-    var argumentslength = arguments.length;
-    var argslength = args.length;
+    // construct request
+    req.headers = { 'User-Agent': 'ghapi' };
+    req.method = method;
+    req.url = 'https://api.github.com'+url;
+    req.json = true;
+    req.withCredentials = false;
 
-    if (argumentslength > argslength) {
-      options = arguments[argumentslength-1];
-    } else if (argumentslength < argslength) {
-      var missing = args.slice(argslength - argumentslength, argslength).join(', ');
+    // handle parameters
+
+    if (count > expectedCount) {
+      parameters = arguments[count-1];
+
+      if (parameters.auth) {
+        req.auth = parameters.auth;
+        delete parameters.auth;
+      }
+    } else if (count < expectedCount) {
+      var missing = args.slice(expectedCount - count, expectedCount).join(', ');
       console.error('Missing arguments:', missing);
     }
 
-    var req = {
-      headers: {
-        'User-Agent': 'request'
-      },
-      method: method,
-      url: 'https://api.github.com'+url,
-      json: true,
-      withCredentials: false
-    }
-
-    if (typeof options === 'object') {
+    if (typeof parameters === 'object') {
       if (method === 'GET') {
-        req.url += '?'+qs.stringify(options);
+        req.url += '?'+qs.stringify(parameters);
       } else {
         req.headers['Content-Type'] = 'application/json';
-        req.body = options;
+        req.body = parameters;
       }
     }
 
