@@ -1,7 +1,7 @@
 {
   "name": "ghapi",
-  "version": "0.0.1",
-  "description": "a small, complete, github api for node and browser",
+  "version": "0.0.2",
+  "description": "a github api for node and browser",
   "main": "index.js",
   "directories": {
     "example": "examples"
@@ -25,5 +25,5 @@
   "bugs": {
     "url": "https://github.com/lukeburns/api/issues"
   },
-  "homepage": "https://github.com/lukeburns/api"
+  "homepage": "https://github.com/lukeburns/ghapi"
 }
