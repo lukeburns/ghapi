@@ -51,4 +51,5 @@ api('createGistFork', '1', { auth: { user: 'user', pass: 'pass' } }, function (e
 
 ## Todo
 
+- oauth
 - Add tests and documentation
