@@ -16,7 +16,7 @@ var api = require('ghapi')
 api(command, arg_1, ..., arg_n [, parameters, callback])
 ```
 
-See `commands.js` for a list of all the commands. The file is compiled by scraping all the commands form the [Github API documentation](https://developer.github.com/v3/). Consult the Github documentation for parameters associated with each api call.
+See `commands.js` for a list of all the commands. The file is compiled by scraping all the commands form the [Github API documentation](https://developer.github.com/v3/). Consult the Github documentation for parameters associated with each api call. For commands requiring authentication, append an `auth` object to parameters.
 
 
 ### Create a new gist
@@ -30,7 +30,16 @@ api('createGist', parameters)
 ```
 
 ```javascript
-api('createGist', { files: { 'api.txt': { content: 'hello!' } }).pipe(process.stdout);
+var files = { 
+  'api.txt': { 
+    content: 'hello!' 
+  }
+}
+var basicAuth = { 
+  user: 'user', 
+  pass: 'pass' 
+}
+api('createGist', { files: files, auth: basicAuth }).pipe(process.stdout);
 ```
 
 ### Fork a gist
@@ -40,16 +49,16 @@ POST /gists/:id/forks
 ```
 
 ```javascript
-api('createGistFork', id, parameters, callback);
+api('createGistFork', id, parameters);
 ```
 
 ```javascript
-api('createGistFork', '1', { auth: { user: 'user', pass: 'pass' } }, function (err, res, body) {
+var bearerAuth = { bearer: 'access token' } // github access token
+api('createGistFork', '1',  { auth: bearerAuth }, function (err, res, body) {
   console.log(body);
 });
 ```
 
 ## Todo
 
-- oauth
 - Add tests and documentation
