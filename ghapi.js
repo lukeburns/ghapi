@@ -1,6 +1,7 @@
 var request = require('request');
 var qs = require('querystring');
 var fs = require('fs');
+var generate = require('./generate');
 var commands = require('./commands');
 
 module.exports = api;
@@ -21,4 +22,4 @@ function api () {
 
   // call request with callback and return request stream
   return request(req.apply(null, arguments), callback);
-} 
+}
