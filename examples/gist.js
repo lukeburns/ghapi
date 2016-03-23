@@ -1,4 +1,4 @@
-var req = req || require('../');
+var api = ghapi || require('../');
 
 var input = {
   files: {
@@ -8,13 +8,10 @@ var input = {
   }
 }
 
-req('createGist', input, function (err, res, body) {
-  if(!err) {
-    req('getGist', body.id, function (err, res, body) {
-      if (typeof window !== 'undefined') {
-        document.body.appendChild(document.createTextNode("Created new gist: "+body.files.api.content));
-      }
-      console.log(body);
-    });
+api('createGist', input, function (err, res, body) {
+  if (typeof window !== 'undefined') {
+    console.log(err)
+    document.body.appendChild(document.createTextNode("Error: "+err+". "));
+    document.body.appendChild(document.createTextNode("Created new gist: "+body.html_url+". "));
   }
 });
